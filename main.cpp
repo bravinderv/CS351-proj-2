@@ -78,6 +78,7 @@ int main()
 				file >> temp.arrivalTime >> temp.processLifeTime
 					>> temp.address >> tempInt;
 				temp.space.push_back(tempInt);
+				temp.timeEntered = -1;
 				proc.push_back(temp);
 				temp.space.clear();
 			}
@@ -100,6 +101,56 @@ int main()
 		}
 		break;
 	}
+
+	int time = 0;
+	vector<process> active;
+	int activeIndex = 0;
+	vector<frame> frames;
+	frame *tempFrame = new frame;
+
+	for (int i = 0; i < memorySize; i += pageSize) 
+	{
+		frames.push_back(initializeFrame(i, i + pageSize - 1));
+	}
+
+	
+
+	while (proc.size() != 0 || active.size() != 0) 
+	{ 
+		cout << " t = " << time << endl;
+
+		for (int j = 0; j < active.size(); j++)
+		{
+			if (time - active.at(j).timeEntered >= active.at(j).processLifeTime)
+			{
+				frames = removeFrames(frames, active.at(j));
+				active.erase(active.begin() + j);
+				activeIndex--;
+			}
+		}
+
+		for (int i = 0; i < proc.size(); i++) 
+		{
+			if (proc.at(i).arrivalTime <= time) 
+			{
+				cout << "process " << proc.at(i).processID << " has arrived" << endl;
+				active.push_back(proc.at(i));
+				proc.erase(proc.begin() + i);
+				frames = assignFramesToProcess(frames, active.at(activeIndex));
+				if (wasJustEntered(frames, active.at(activeIndex))) 
+				{
+					active.at(activeIndex).timeEntered = time;
+				}
+
+				activeIndex++;
+				i--;
+			}		
+		}
+
+		
+		time += pageSize;
+	}
+
 
 	system("pause");
 	return 0;
