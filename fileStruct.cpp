@@ -1,6 +1,17 @@
 #include "fileStruct.h"
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <cstring>
+using namespace std;
+using std::vector;
 
-frame initializeFrame(int start, int end) 
+fileStruct::fileStruct() 
+{
+
+}
+
+fileStruct::frame fileStruct::initializeFrame(int start, int end) 
 {
 	frame* f = new frame();
 	f->startTime = start;
@@ -10,7 +21,7 @@ frame initializeFrame(int start, int end)
 	return *f;
 }
 
-void setFrame(frame* f, process p, int start, int end, int page) 
+void fileStruct::setFrame(frame* f, process p, int start, int end, int page)
 {
 	f->startTime = start;
 	f->endTime = end;
@@ -18,7 +29,7 @@ void setFrame(frame* f, process p, int start, int end, int page)
 	f->page = page;
 }
 
-int numOfFreeFrames(vector<frame> f) 
+int fileStruct::numOfFreeFrames(vector<frame> f)
 {
 	int num = 0;
 
@@ -33,7 +44,7 @@ int numOfFreeFrames(vector<frame> f)
 	return num;
 }
 
-vector<frame> assignFramesToProcess(vector<frame> f, process p) 
+vector<fileStruct::frame> fileStruct::assignFramesToProcess(vector<fileStruct::frame> f, process p)
 {
 	int space = spaceOfProc(p.space);
 	int pageNum = 1;
@@ -54,7 +65,7 @@ vector<frame> assignFramesToProcess(vector<frame> f, process p)
 
 }
 
-void printFrame(frame f) 
+void fileStruct::printFrame(frame f)
 {
 	cout << "\t" << f.startTime << "-" << f.endTime;
 	if (f.endTime < 1000) 
@@ -72,7 +83,7 @@ void printFrame(frame f)
 	}
 }
 
-int spaceOfProc(vector<int> space)
+int fileStruct::spaceOfProc(vector<int> space)
 {
 	int spaceOfProcess = 0;
 	for (int i = 0; i < space.size(); i++)
@@ -82,7 +93,7 @@ int spaceOfProc(vector<int> space)
 	return spaceOfProcess;
 }
 
-void printArrived(vector<process> processes, int time, int page)
+void fileStruct::printArrived(vector<process> processes, int time, int page)
 {
 	cout << "processes { ";
 	for (int j = 0; j < processes.size(); j++)
@@ -92,7 +103,7 @@ void printArrived(vector<process> processes, int time, int page)
 	cout << "} has arrived at " << time << " - " << time + (page - 1) << endl;
 }
 
-vector<process> enteredQueue(vector<process> processes, int time, int page, int memory)
+vector<fileStruct::process> fileStruct::enteredQueue(vector<process> processes, int time, int page, int memory)
 {
 	vector<process> toReturn;
 	cout << "T - " << time << endl;
@@ -109,7 +120,7 @@ vector<process> enteredQueue(vector<process> processes, int time, int page, int 
 	return toReturn;
 }
 
-bool wasJustEntered(vector<frame> f, process p) 
+bool fileStruct::wasJustEntered(vector<frame> f, process p)
 {
 	if (p.timeEntered != -1) 
 	{
@@ -127,7 +138,7 @@ bool wasJustEntered(vector<frame> f, process p)
 	return false;
 }
 
-vector<frame> removeFrames(vector<frame> f, process p) 
+vector<fileStruct::frame> fileStruct::removeFrames(vector<frame> f, process p)
 {
 	cout << "process : " << p.processID << " has completed" << endl;
 	for (int i = 0; i < f.size(); i++) 
@@ -141,10 +152,10 @@ vector<frame> removeFrames(vector<frame> f, process p)
 	return f;
 }
 
-void printQueueProcesses(vector<process> p) 
+void fileStruct::printQueueProcesses(vector<process> p)
 {
 	cout << "Queue [";
-	for (int i = 0; i < p.size(); i++) 
+	for (int i = 0; i < p.size(); i++)
 	{
 		if (p.at(i).timeEntered == -1) 
 		{

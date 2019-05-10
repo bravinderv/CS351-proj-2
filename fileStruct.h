@@ -1,44 +1,57 @@
+
+
 #pragma once
+#include "fileStruct.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <cstring>
 using namespace std;
+using std::vector;
 
-typedef struct process {
-	int processID;
-	int arrivalTime;
-	int processLifeTime;
-	int address;
-	vector<int> space;
-	int timeEntered;
-}process;
 
-typedef struct frame {
-	int startTime;
-	int endTime;
-	int page;
-	int processID;
-}frame;
+class fileStruct 
+{
+public:
+	fileStruct();
+	typedef struct process {
+		int processID;
+		int arrivalTime;
+		int processLifeTime;
+		int address;
+		vector<int> space;
+		int timeEntered;
+	}process;
 
-frame initializeFrame(int start, int end);
+	typedef struct frame {
+		int startTime;
+		int endTime;
+		int page;
+		int processID;
+	}frame;
 
-void setFrame(frame* f, process p, int start, int end, int page);
+	frame initializeFrame(int start, int end);
 
-void printFrame(frame f);
+	void setFrame(frame* f, process p, int start, int end, int page);
 
-int spaceOfProc(vector<int> space);
+	void printFrame(frame f);
 
-void printArrived(vector<process> processes, int time, int page);
+	int spaceOfProc(vector<int> space);
 
-vector<process> enteredQueue(vector<process> processes, int time, int page, int memory);
+	void printArrived(std::vector<process> processes, int time, int page);
 
-vector<frame> assignFramesToProcess(vector<frame> f, process p);
+	vector<process> enteredQueue(vector<process> processes, int time, int page, int memory);
 
-int numOfFreeFrames(vector<frame> f);
+	vector<frame> assignFramesToProcess(vector<frame> f, process p);
 
-bool wasJustEntered(vector<frame> f, process p);
+	int numOfFreeFrames(vector<frame> f);
 
-vector<frame> removeFrames(vector<frame> f, process p);
+	bool wasJustEntered(vector<frame> f, process p);
 
-void printQueueProcesses(vector<process> p);
+	vector<frame> removeFrames(vector<frame> f, process p);
+
+	void printQueueProcesses(vector<process> p);
+
+};
+
+
