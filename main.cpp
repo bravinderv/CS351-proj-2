@@ -1,3 +1,14 @@
+/*
+Vincent Bravinder
+Ethan Narciso
+Daniel Rangel
+CPSC 351 Yun Tian
+Project 2
+
+*/
+
+
+
 #define _CRT_SECURE_NO_DEPRECATE
 #include "fileStruct.h"
 
@@ -37,8 +48,27 @@ int main()
 			cout << memorySize << " is too big, pick something less than " << MAXIMUM_TIME << endl;
 			break;
 		}
-		cout << "Page Size (enter either 100,200, or 400) ";
+		cout << "Page Size (1: 100, 2: 200, 3: 400)> ";
 		cin >> pageSize;
+
+		if (pageSize == 1) 
+		{
+			pageSize = 100;
+		}
+		else if (pageSize == 2) 
+		{
+			pageSize = 200;
+		}
+		else if(pageSize == 3) 
+		{
+			pageSize = 400;
+		}
+		else 
+		{
+			cout << "not a valid number" << endl;
+			break;
+		}
+
 		if (!isMultiple(memorySize, pageSize))
 		{
 			cout << memorySize << " is not a multiple of " << pageSize << endl;
@@ -102,6 +132,7 @@ int main()
 		break;
 	}
 
+	float turnAroundTime = 0;
 	int time = 0;
 	vector<process> active;
 	int activeIndex = 0;
@@ -119,37 +150,47 @@ int main()
 	{ 
 		cout << " t = " << time << endl;
 
-		for (int j = 0; j < active.size(); j++)
+		for (int k = 0; k < proc.size(); k++) 
 		{
-			if (time - active.at(j).timeEntered >= active.at(j).processLifeTime)
+			if (proc.at(k).arrivalTime <= time) 
 			{
-				frames = removeFrames(frames, active.at(j));
-				active.erase(active.begin() + j);
-				activeIndex--;
+				cout << "process " << proc.at(k).processID << " has arrived" << endl;
+				active.push_back(proc.at(k));
+				printQueueProcesses(active);
+				proc.erase(proc.begin() + k);
+				k--;
 			}
 		}
 
-		for (int i = 0; i < proc.size(); i++) 
+		for (int j = 0; j < active.size(); j++)
 		{
-			if (proc.at(i).arrivalTime <= time) 
+			if (time - active.at(j).timeEntered >= active.at(j).processLifeTime && 
+				active.at(j).timeEntered != -1)
 			{
-				cout << "process " << proc.at(i).processID << " has arrived" << endl;
-				active.push_back(proc.at(i));
-				proc.erase(proc.begin() + i);
-				frames = assignFramesToProcess(frames, active.at(activeIndex));
-				if (wasJustEntered(frames, active.at(activeIndex))) 
-				{
-					active.at(activeIndex).timeEntered = time;
-				}
-
-				activeIndex++;
-				i--;
-			}		
+				frames = removeFrames(frames, active.at(j));
+				turnAroundTime += (time - active.at(j).arrivalTime);
+				active.erase(active.begin() + j);
+				j--;
+			}
 		}
 
+		for (int i = 0; i < active.size(); i++) 
+		{
+			if (active.at(i).timeEntered == -1 && 
+				spaceOfProc(active.at(i).space) <= numOfFreeFrames(frames))
+			{
+				frames = assignFramesToProcess(frames, active.at(i));
+				active.at(i).timeEntered = time;
+				printQueueProcesses(active);
+			}
+			
+		}
 		
-		time += pageSize;
+		time += 100;
 	}
+
+	turnAroundTime /= numOfProcesses;
+	cout << "Average Turnaround Time: " << turnAroundTime << endl;
 
 
 	system("pause");

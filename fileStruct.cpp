@@ -45,8 +45,7 @@ vector<frame> assignFramesToProcess(vector<frame> f, process p)
 			f.at(i).page = pageNum;
 			pageNum++;
 			space -= (f.at(i).endTime - f.at(i).startTime + 1);
-			
-			
+
 		}
 		printFrame(f.at(i));
 
@@ -140,4 +139,17 @@ vector<frame> removeFrames(vector<frame> f, process p)
 		printFrame(f.at(i));
 	}
 	return f;
+}
+
+void printQueueProcesses(vector<process> p) 
+{
+	cout << "Queue [";
+	for (int i = 0; i < p.size(); i++) 
+	{
+		if (p.at(i).timeEntered == -1) 
+		{
+			cout << p.at(i).processID << " ";
+		}
+	}
+	cout << "]" << endl;
 }

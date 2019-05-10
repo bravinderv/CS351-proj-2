@@ -41,3 +41,4 @@ bool wasJustEntered(vector<frame> f, process p);
 
 vector<frame> removeFrames(vector<frame> f, process p);
 
+void printQueueProcesses(vector<process> p);
