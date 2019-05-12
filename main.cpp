@@ -11,6 +11,7 @@ Project 2
 
 #define _CRT_SECURE_NO_DEPRECATE
 #include "fileStruct.h"
+#include <vector>
 
 
 
@@ -36,8 +37,9 @@ int main()
 	int tempInt;
 	long virtualCheck = 0;
 	char fileName[255] = "";
-	vector<process> proc;
-	process temp;
+	fileStruct fs;
+	vector<fileStruct::process> proc;
+	fileStruct::process temp;
 
 	while (virtualCheck < memorySize)
 	{
@@ -116,32 +118,20 @@ int main()
 
 		}
 
-		for (int i = 0; i < numOfProcesses; i++)
-		{
-			cout << "process ID : " << proc.at(i).processID << endl;
-			cout << "arrival time : " << proc.at(i).arrivalTime << endl;
-			cout << "life time : " << proc.at(i).processLifeTime << endl;
-			cout << "address : " << proc.at(i).address << endl;
-			cout << "space : ";
-			for (int j = 0; j < proc.at(i).space.size(); j++) 
-			{
-				cout << proc.at(i).space.at(j) << " ";
-			}
-			cout << endl << endl;
-		}
+		
 		break;
 	}
 
 	float turnAroundTime = 0;
 	int time = 0;
-	vector<process> active;
+	vector<fileStruct::process> active;
 	int activeIndex = 0;
-	vector<frame> frames;
-	frame *tempFrame = new frame;
+	vector<fileStruct::frame> frames;
+	fileStruct::frame *tempFrame = new fileStruct::frame;
 
 	for (int i = 0; i < memorySize; i += pageSize) 
 	{
-		frames.push_back(initializeFrame(i, i + pageSize - 1));
+		frames.push_back(fs.initializeFrame(i, i + pageSize - 1));
 	}
 
 	
@@ -156,7 +146,7 @@ int main()
 			{
 				cout << "process " << proc.at(k).processID << " has arrived" << endl;
 				active.push_back(proc.at(k));
-				printQueueProcesses(active);
+				fs.printQueueProcesses(active);
 				proc.erase(proc.begin() + k);
 				k--;
 			}
@@ -167,7 +157,7 @@ int main()
 			if (time - active.at(j).timeEntered >= active.at(j).processLifeTime && 
 				active.at(j).timeEntered != -1)
 			{
-				frames = removeFrames(frames, active.at(j));
+				frames = fs.removeFrames(frames, active.at(j));
 				turnAroundTime += (time - active.at(j).arrivalTime);
 				active.erase(active.begin() + j);
 				j--;
@@ -177,11 +167,11 @@ int main()
 		for (int i = 0; i < active.size(); i++) 
 		{
 			if (active.at(i).timeEntered == -1 && 
-				spaceOfProc(active.at(i).space) <= numOfFreeFrames(frames))
+				fs.spaceOfProc(active.at(i).space) <= fs.numOfFreeFrames(frames))
 			{
-				frames = assignFramesToProcess(frames, active.at(i));
+				frames = fs.assignFramesToProcess(frames, active.at(i));
 				active.at(i).timeEntered = time;
-				printQueueProcesses(active);
+				fs.printQueueProcesses(active);
 			}
 			
 		}
